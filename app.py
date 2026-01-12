@@ -1,37 +1,17 @@
-import streamlit as st
-import numpy as np
-import cv2
-from PIL import Image
-import json
-from utils import detect_and_process_id_card
+"""
+Egyptian National ID Extractor - Main Entry Point
 
-st.set_page_config(page_title="Egyptian ID Extractor", layout="wide")
+This application uses MVC architecture to extract information from Egyptian National ID cards.
+It employs YOLO for object detection and EasyOCR for text extraction.
 
-st.title("🪪 Egyptian National ID Extractor")
-st.markdown("Upload an image of an Egyptian National ID to extract data.")
+Architecture:
+- Models: Data structures and ML model wrappers
+- Views: Streamlit UI components
+- Controllers: Business logic for ID extraction
+- Utils: Helper functions for image processing and ID decoding
+"""
 
-uploaded_file = st.file_uploader("Choose an ID Card Image", type=['jpg', 'jpeg', 'png'])
+from views.streamlit_app import run_app
 
-if uploaded_file is not None:
-    # Display the uploaded image
-    image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded ID Card', use_column_width=True)
-
-    if st.button("Extract Data"):
-        with st.spinner("Processing ID Card..."):
-            try:
-                # Convert PIL image to OpenCV format (BGR)
-                image_np = np.array(image)
-                image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-
-                # Process the image
-                result = detect_and_process_id_card(image_bgr)
-
-                # Display Results
-                if "error" in result:
-                    st.error(result["error"])
-                else:
-                    st.success("Data Extracted Successfully!")
-                    st.json(result)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+if __name__ == "__main__":
+    run_app()
